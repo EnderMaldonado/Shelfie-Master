@@ -11,7 +11,6 @@ const Router = require('koa-router');
 const koaBodyParse = require('koa-bodyparser');
 const { receiveWebhook, registerWebhook } = require('@shopify/koa-shopify-webhooks');
 const getSubscriptionUrl = require('./server/getSubscriptionUrl');
-const Cookies = require('js-cookie')
 
 const port = parseInt(process.env.PORT, 10) || 3000;
 const dev = process.env.NODE_ENV !== 'production';
@@ -32,6 +31,7 @@ app.prepare().then(() => {
   const server = new Koa();
   const router = new Router();
   server.use(session(server));
+  //server.use(session({ secure: true, sameSite: 'none' }, server))
 
   server.keys = [SHOPIFY_API_SECRET_KEY];
 
@@ -39,7 +39,7 @@ app.prepare().then(() => {
     createShopifyAuth({
       apiKey: SHOPIFY_API_KEY,
       secret: SHOPIFY_API_SECRET_KEY,
-      scopes: ['read_products', 'write_products', 'shop'],
+      scopes: ['read_products', 'write_products'],
       async afterAuth(ctx) {
         try {
           const { shop, accessToken } = ctx.session;
@@ -72,7 +72,7 @@ app.prepare().then(() => {
 
   const webhook = receiveWebhook({ secret: SHOPIFY_API_SECRET_KEY });
 
-  router.post('/webhooks/orders/cancelled', webhook, async (ctx) => {
+  router.post('/webhooks/products/update', webhook, async (ctx) => {
     try {
       console.log('\n\n: ', ctx.state.webhook)
     } catch (e) {
@@ -81,6 +81,8 @@ app.prepare().then(() => {
   });
 
   server.use(graphQLProxy({ version: API_VERSION }));
+
+  const routers = require('./custom_modules/routers')(router)
 
   router.get('*', verifyRequest(), async (ctx) => {
     try {
@@ -92,8 +94,6 @@ app.prepare().then(() => {
       console.log(e)
     }
   });
-
-  const routers = require('./custom_modules/routers')(router)
 
   server.use(koaBodyParse());
   server.use(router.allowedMethods());

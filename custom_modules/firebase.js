@@ -1,14 +1,14 @@
 const firebase = require('firebase')
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDeWBLgXOejW1NB8ZI5FGHmlaPFDaToZ0k",
-  authDomain: "shelfie-master.firebaseapp.com",
-  databaseURL: "https://shelfie-master.firebaseio.com",
-  projectId: "shelfie-master",
-  storageBucket: "shelfie-master.appspot.com",
-  messagingSenderId: "471144772901",
-  appId: "1:471144772901:web:3468f3d65bf9a4fb5b96cc",
-  measurementId: "G-N7H610XZP9"
+  apiKey: "AIzaSyC9ZuJwtpwmyWwmGScqWI0TjGxLp6V6v44",
+  authDomain: "macao-9e9e2.firebaseapp.com",
+  databaseURL: "https://macao-9e9e2.firebaseio.com",
+  projectId: "macao-9e9e2",
+  storageBucket: "macao-9e9e2.appspot.com",
+  messagingSenderId: "237510003786",
+  appId: "1:237510003786:web:f0ec7f70ad57ad1fa1eab3",
+  measurementId: "G-G4GJFLDEEC"
 }
 
 module.exports = !firebase.apps.length ? firebase.initializeApp(firebaseConfig) : firebase.app();

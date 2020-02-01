@@ -11,7 +11,7 @@ const shopReducer = (state, {type, shopName}) => {
     case SET_SHOP_NAME:
       return {...state, shopName}
     default:
-    return state
+      return state
   }
 }
 
