@@ -1,15 +1,17 @@
 import {useContext, useState} from 'react';
-import { AppBar, Toolbar, Typography, makeStyles, IconButton } from '@material-ui/core'
+import { AppBar, Toolbar, Typography, makeStyles, IconButton, Backdrop, Tooltip } from '@material-ui/core'
 import AppsIcon from '@material-ui/icons/Apps';
 
 import ShopContext from '../Context/Shop/ShopContext'
 import useShelfiMasterMethods from '../customHooks/useShelfiMasterMethods';
 import NavbarDrawer from '../Molecules/NavbarDrawer';
 import NavigationContext from '../Context/Navigation/NavigationContext';
-
+import SessionContext from '../Context/Session/SessionContext'
 import ReceiptIcon from '@material-ui/icons/Receipt'
 import AllInboxIcon from '@material-ui/icons/AllInbox'
 import EditLocationIcon from '@material-ui/icons/EditLocation'
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import SessionLogin from '../Molecules/SessionLogin'
 
 const useStyles = makeStyles(theme => ({
   title: {
@@ -22,8 +24,10 @@ const SimpleAppBar = () => {
 
   const [{shopName}] = useContext(ShopContext)
   const [{page}] = useContext(NavigationContext)
+  const [{user}] = useContext(SessionContext)
 
   const [open, setOpen] = useState(false)
+  const [openSession, setOpenSession] = useState(false)
 
   const smM = useShelfiMasterMethods()
 
@@ -54,8 +58,14 @@ const SimpleAppBar = () => {
         <Typography variant="h6" align="right" className={classes.title}>
           {shopName}
         </Typography>
+        <Tooltip title={user}>
+          <IconButton onClick={()=>setOpenSession(true)}>
+            <AccountCircleIcon/>
+          </IconButton>
+        </Tooltip>
       </Toolbar>
     </AppBar>
+    <SessionLogin {...{setOpenSession, openSession}}/>
     <NavbarDrawer {...{open, setOpen, menuItems:navItems, onClickNavItem:handleClickNavbar}} />
     </>
 }

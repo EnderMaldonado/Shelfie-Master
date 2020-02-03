@@ -25,10 +25,24 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const AdminShelfList = ({shelf, filterText, onClickItem}) => {
+const AdminShelfList = ({shelf, filterText}) => {
   const classes = useStyles();
 
   const smM = useShelfiMasterMethods()
+
+  const [{userType}] = useContext(SessionContext)
+
+  const snackbarOptionsSucess = {
+    variant:"success",
+    autoHideDuration: 3000
+  }
+  const snackbarOptionsError = {
+    variant:"error",
+    autoHideDuration: 3000
+  }
+  const handleSnackbar = (text, options) => {
+    smM().handleSnackbar(text, options)
+  }
 
   const [loading, setLoading] = useState(false)
 
@@ -48,10 +62,29 @@ const AdminShelfList = ({shelf, filterText, onClickItem}) => {
 
   const [refresh, setRefresh] = useState(false)
   const handleRefresh = () => setRefresh(!refresh)
+  const refItemInfo = useRef()
 
   useEffect(()=>{
     getShelfItems()
   },[shelf, filterText, refresh])
+
+  const handleClickItem = id => {
+    if(refItemInfo.current)
+    refItemInfo.current.handleLoadInfo(id)
+  }
+
+  const handleCancel = async () => {
+    try {
+      smM().setLoading(true)
+      let remove = await smM().removeLabelItem(id)
+      handleSnackbar(`Label "${id}" removed`, snackbarOptionsSucess)
+      handleRefresh()
+      smM().setLoading(false)
+    } catch (e) {
+      console.log(e)
+      handleSnackbar(`Error to remove label "${id}"`, snackbarOptionsError)
+    }
+  }
 
   return <Paper elevation={4}>
     <List className={classes.root} subheader={<li />}>
@@ -66,8 +99,8 @@ const AdminShelfList = ({shelf, filterText, onClickItem}) => {
                         <ul className={classes.ul}>
                           <ListSubheader style={{marginLeft: "3rem"}}>{floor.toUpperCase()}</ListSubheader>
                           {Object.keys(inventary[shelf][floor]).map((itemId,k) =>
-                            <AdminShelfListItem button onClick={()=>onClickItem(itemId)}
-                            key={"item"+k} {...{...inventary[shelf][floor][itemId], handleRefresh}}/>
+                            <AdminShelfListItem button onClick={()=>handleClickItem(itemId)}
+                            key={"item"+k} {...{...inventary[shelf][floor][itemId]}}/>
                           )}
                         </ul>
                       </li>
@@ -81,6 +114,7 @@ const AdminShelfList = ({shelf, filterText, onClickItem}) => {
           </>
       }
     </List>
+    <InfoItemDrawer ref={refItemInfo} {{handleRefresh, handleCancel}}/>
   </Paper>
 
 }

@@ -19,21 +19,21 @@ const HistoryActionsItemCreateLabel = ({index, product, id, isCancelling, qtyBox
 
   const {title, sku} = product
 
-  const smM = useShelfiMasterMethods()
+  // const smM = useShelfiMasterMethods()
 
-  const HandleCancel = () => {
-    smM().removeItemHistoryActions(index, id)
-  }
-
-  const handlePrint = () => {
-    let iframe = window.document.getElementById(index+id+"iframe")
-    if(iframe)
-      iframe.contentWindow.print()
-  }
-
-  const handleShowFade = v => {
-    smM().updateItemHistoryActions(index, {"isCancelling":v})
-  }
+  // const handleCancel = () => {
+  //   smM().removeItemHistoryActions(index, id)
+  // }
+  //
+  // const handlePrint = () => {
+  //   let iframe = window.document.getElementById(index+id+"iframe")
+  //   if(iframe)
+  //     iframe.contentWindow.print()
+  // }
+  //
+  // const handleShowFade = v => {
+  //   smM().updateItemHistoryActions(index, {"isCancelling":v})
+  // }
 
   return <ListItem button={button} onClick={onClick}>
       <ListItemAvatar>
@@ -41,7 +41,7 @@ const HistoryActionsItemCreateLabel = ({index, product, id, isCancelling, qtyBox
           <ReceiptIcon />
         </Avatar>
       </ListItemAvatar>
-      <FadeCancellingHAItem {...{isCancelling, HandleCancel, handleShowFade}}/>
+      {/*<FadeCancellingHAItem {...{isCancelling, handleCancel, handleShowFade}}/>*/}
       <Iframe id={index+id+"iframe"} style={{display:"none"}}>
         <ProductitemLabelFormat
           id={id}
@@ -67,15 +67,16 @@ const HistoryActionsItemCreateLabel = ({index, product, id, isCancelling, qtyBox
           </Typography>
         }
       />
-      <ListItemSecondaryAction>
-        <IconButton edge="end" onClick={handlePrint}>
-          <PrintIcon />
-        </IconButton>
-        <IconButton edge="end" onClick={handleShowFade}>
-          <DeleteIcon/>
-        </IconButton>
-      </ListItemSecondaryAction>
     </ListItem>
 }
+
+// <ListItemSecondaryAction>
+//   <IconButton edge="end" onClick={handlePrint}>
+//     <PrintIcon />
+//   </IconButton>
+//   <IconButton edge="end" onClick={handleShowFade}>
+//     <DeleteIcon/>
+//   </IconButton>
+// </ListItemSecondaryAction>
 
 export default HistoryActionsItemCreateLabel

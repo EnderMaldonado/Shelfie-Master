@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
 import { ListItem, Avatar, ListItemAvatar, ListItemText, Grid,
   Typography, Fade, IconButton, Paper, ListItemSecondaryAction, Collapse, List, Chip } from "@material-ui/core"
 
@@ -12,44 +12,9 @@ import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import FadeCancellingHAItem from '../Atoms/FadeCancellingHAItem'
 import BoxIcon from '../SvgIcons/BoxIcon'
 import useShelfiMasterMethods from "../customHooks/useShelfiMasterMethods"
+import SessionContext from '../Context/Session/SessionContext'
 
-const AdminShelfListItem = ({index, shopify_title, shopify_sku, id, packed_quantity, button, onClick, handleRefresh}) => {
-
-  const smM = useShelfiMasterMethods()
-
-  const snackbarOptionsSucess = {
-    variant:"success",
-    autoHideDuration: 3000
-  }
-  const snackbarOptionsError = {
-    variant:"error",
-    autoHideDuration: 3000
-  }
-
-
-  const handleSnackbar = (text, options) => {
-    smM().handleSnackbar(text, options)
-  }
-
-  const [isCancelling, setIsCancelling] = useState(false)
-
-  const handleCancel = async () => {
-    try {
-      smM().setLoading(true)
-      let remove = await smM().removeLabelItem(id)
-      handleSnackbar(`Label "${id}" removed`, snackbarOptionsSucess)
-      setIsCancelling(false)
-      handleRefresh()
-      smM().setLoading(false)
-    } catch (e) {
-      console.log(e)
-      handleSnackbar(`Error to remove label "${id}"`, snackbarOptionsError)
-    }
-  }
-
-  const handleShowFade = v => {
-    setIsCancelling(v)
-  }
+const AdminShelfListItem = ({index, shopify_title, shopify_sku, id, packed_quantity, button, onClick}) => {
 
   return <ListItem button={button && !isCancelling} onClick={!isCancelling?onClick:()=>null}>
       <ListItemAvatar>
@@ -57,7 +22,6 @@ const AdminShelfListItem = ({index, shopify_title, shopify_sku, id, packed_quant
           <ReceiptIcon />
         </Avatar>
       </ListItemAvatar>
-      <FadeCancellingHAItem {...{isCancelling, handleCancel, handleShowFade}}/>
       <ListItemText
         primary={
           <React.Fragment>
@@ -78,11 +42,6 @@ const AdminShelfListItem = ({index, shopify_title, shopify_sku, id, packed_quant
           </Typography>
         }
       />
-      <ListItemSecondaryAction>
-        <IconButton edge="end" onClick={handleShowFade}>
-          <DeleteIcon/>
-        </IconButton>
-      </ListItemSecondaryAction>
     </ListItem>
 }
 

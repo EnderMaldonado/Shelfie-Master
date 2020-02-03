@@ -85,6 +85,19 @@ const InfoItemDrawer = forwardRef ((props, ref) => {
       iframe.contentWindow.print()
   }
 
+  const handleCancel = async () => {
+    try {
+      smM().setLoading(true)
+      let remove = await smM().removeLabelItem(id)
+      handleSnackbar(`Label "${id}" removed`, snackbarOptionsSucess)
+      handleRefresh()
+
+      smM().setLoading(false)
+    } catch (e) {
+      console.log(e)
+      handleSnackbar(`Error to remove label "${id}"`, snackbarOptionsError)
+    }
+  }
 
   return <Drawer anchor="right"  open={open} onClose={()=>setOpen(false)}>
     <div
@@ -96,6 +109,9 @@ const InfoItemDrawer = forwardRef ((props, ref) => {
           <ChevronLeftIcon />
         </IconButton>
         {!loading && !error ? <React.Fragment>
+          <IconButton edge="end" onClick={handlePrint}>
+            <PrintIcon />
+          </IconButton>
           <IconButton edge="end" onClick={handlePrint}>
             <PrintIcon />
           </IconButton>

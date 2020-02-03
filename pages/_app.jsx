@@ -12,6 +12,7 @@ import ListProvider from '../components/Context/List/ListProvider'
 import NavigationProvider from '../components/Context/Navigation/NavigationProvider'
 import HandlesProvider from '../components/Context/Handles/HandlesProvider'
 import LoadingProvider from '../components/Context/Loading/LoadingProvider'
+import SessionProvider from '../components/Context/Session/SessionProvider'
 
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
@@ -49,7 +50,9 @@ export default class MyApp extends App {
                   <ShopProvider>
                     <ListProvider>
                       <LoadingProvider>
-                        <Component {...pageProps} />
+                        <SessionProvider>
+                          <Component {...pageProps} />
+                        </SessionProvider>
                       </LoadingProvider>
                     </ListProvider>
                   </ShopProvider>

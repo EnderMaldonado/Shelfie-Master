@@ -4,12 +4,13 @@ import useFirebase from './useFirebase'
 import serverTime from '../../custom_modules/server-time'
 
 import {SET_SHOP_NAME,  SET_PAGE, SET_HANDLE, DELETE_HANDLE, SET_LOADING, CLEAM_LIST_HISTORY_ACTIONS,
-  ADD_ITEM_HISTORY_ACTIONS, SET_ITEM_HISTORY_ACTIONS, REMOVE_ITEM_HISTORY_ACTIONS} from '../Context/actions.js'
+  ADD_ITEM_HISTORY_ACTIONS, SET_ITEM_HISTORY_ACTIONS, REMOVE_ITEM_HISTORY_ACTIONS, SET_USER, EXIT_SESSION} from '../Context/actions.js'
 import ShopContext from '../Context/Shop/ShopContext'
 import ListContext from '../Context/List/ListContext'
 import NavigationContext from '../Context/Navigation/NavigationContext'
 import HandlesContext from '../Context/Handles/HandlesContext'
 import LoadingContext from '../Context/Loading/LoadingContext'
+import SessionContext from '../Context/Session/SessionContext'
 
 import {increaseHexadecimal, NumberToCharacterLowerAZ, getCategory} from '../../src/SM_Methods'
 import { useSnackbar } from 'notistack'
@@ -23,7 +24,7 @@ const useShelfiMasterMethods = () => {
   const [{page}, dispatchNavigation] = useContext(NavigationContext)
   const [stateHandles, dispatchHandles] = useContext(HandlesContext)
   const [{loading}, dispatchLoading]  = useContext(LoadingContext)
-
+  const [{user, typeUser}, dispatchSession] = useContext(SessionContext)
 
   //Methots . . .
   const setShop = sn => dispatchShop({type:SET_SHOP_NAME, shopName:sn})
@@ -31,6 +32,8 @@ const useShelfiMasterMethods = () => {
   const setHandleMethod = (handleName, handle) => dispatchHandles({type:SET_HANDLE, handleName, handle})
   const deleteHandle = (handleName, handle) => dispatchHandles({type:DELETE_HANDLE, handleName})
   const setLoading = isLoading => dispatchLoading({type:SET_LOADING, loading:isLoading})
+  const setUserSession = (u, tU) => dispatchSession({type:SET_USER, user:u, typeUser:tU})
+  const exitSession = () => dispatchSession({type:EXIT_SESSION})
 
   const addItemHistoryActions = (item) => {
     dispatchList({type:ADD_ITEM_HISTORY_ACTIONS, item})
@@ -251,14 +254,28 @@ const useShelfiMasterMethods = () => {
 
       getShelfs: () => new Promise(async (resolve, reject) => {
         try {
-          let shelfs = useFirebase.retriveData("shelfs")
+          let shelfs = await useFirebase.retriveData("shelfs")
           resolve(shelfs)
         } catch (error) {
           console.log(error)
           reject(error)
-
         }
       }),
+
+      handleLoginUser: (userName, password) => new Promise(async (resolve, reject) => {
+        try {
+          let user = await useFirebase.retriveData(`session/${userName.toLowerCase()}`)
+          let isSame = user && user.password === password
+          if(isSame)
+            setUserSession(userName.replace(/\b[a-z]/g,c=>c.toUpperCase()), user.type)
+          resolve(isSame)
+        } catch (error) {
+          console.log(error)
+          reject(error)
+        }
+      }),
+
+      handleExitSession: exitSession,
 
       handleSnackbar: (message, options) => enqueueSnackbar(message, { ...options }),
 

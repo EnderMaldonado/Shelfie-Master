@@ -8,7 +8,6 @@ const AdminShelfPage = () => {
 
   const [shelf, setShelf] = useState("")
   const [filterText, setFilterText] = useState("")
-  const refItemInfo = useRef()
 
   const handleChangeFilters = (id, e) => {
     switch (id) {
@@ -21,11 +20,6 @@ const AdminShelfPage = () => {
       default:
         break;
     }
-  }
-
-  const handleClickItem = id => {
-    if(refItemInfo.current)
-    refItemInfo.current.handleLoadInfo(id)
   }
 
   useEffect(()=>{

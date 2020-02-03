@@ -4,6 +4,7 @@ import { Typography, Tooltip, Grid } from "@material-ui/core"
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline'
 
 import useShelfiMasterMethods from "../customHooks/useShelfiMasterMethods"
+import useHistory from '../customHooks/useHistory'
 
 const LocateItem = forwardRef(({action, setAction, loading, setLoading}, ref) => {
 
@@ -26,13 +27,15 @@ const LocateItem = forwardRef(({action, setAction, loading, setLoading}, ref) =>
   const snackbarOptionsinfo = {
     variant:"info"
   }
-  
+
   const handleSnackbar = (text, options) => {
     setLoading(false)
-    smM().handleSnackbar(text, options)  
+    smM().handleSnackbar(text, options)
   }
 
 	const smM = useShelfiMasterMethods()
+
+  const handleHistory = useHistory()
 
   const addItemHAL = (sku, id, qtyBox, location) => {
     smM().addItemtoHistoryActions({
@@ -52,11 +55,11 @@ const LocateItem = forwardRef(({action, setAction, loading, setLoading}, ref) =>
   const handleScannBarcode = async barcode => {
     if(barcode.length) {
       setLoading(true)
-      if(action === "SET_ITEM_LOCATION") 
+      if(action === "SET_ITEM_LOCATION")
         handleSetItemLocation(barcode)
-      else 
+      else
         handleSelectPlace(barcode)
-    } else 
+    } else
       handleSnackbar(`Enter a barcode`, snackbarOptionsWarning)
   }
 
@@ -79,11 +82,12 @@ const LocateItem = forwardRef(({action, setAction, loading, setLoading}, ref) =>
       let item = await smM().setItemLocation(barcode, place)
       handleSnackbar(`Item "${barcode}" located in "${place}"`, snackbarOptionsSucess)
       addItemHAL(item.sku, barcode, item.packed_quantity, item.location)
+      handleHistory(`Item located in "${place}"`, barcode, item.shopify_id)
       setAction("SELECT_SHELF")
     } catch (error) {
       if(error === 404)
         handleSnackbar(`Item "${barcode}" not exist`, snackbarOptionsError)
-      else 
+      else
         handleSnackbar(`Error to locate item "${barcode}"`, snackbarOptionsWarning)
     }
   }

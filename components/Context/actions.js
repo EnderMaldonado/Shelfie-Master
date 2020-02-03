@@ -16,3 +16,7 @@ export const DELETE_HANDLE = "DELETE_HANDLE"
 
 //Loading...
 export const SET_LOADING = "SET_LOADING"
+
+//Session...
+export const SET_USER = "SET_USER"
+export const EXIT_SESSION = "EXIT_SESSION"
