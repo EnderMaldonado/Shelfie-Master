@@ -55,7 +55,7 @@
     "koa-session": "^5.12.3",
     "moment": "^2.24.0",
     "net": "^1.0.2",
-    "next": "8.1.1-canary.57",
+    "next": "9.3.2",
     "notistack": "^0.9.7",
     "querybase": "^0.6.0",
     "react": "^16.10.2",
